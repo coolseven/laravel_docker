@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  php-fpm:
+    #container_name: ${APP_NAME}_php_fpm
+    build:
+        context:  ./docker/php-fpm
+    volumes:
+        - ./:/usr/share/nginx/laravel_docker
+        - ./storage/php-logs/error.log:/var/log/php/error.log
+        - ./storage/php-logs/www.slow.log:/var/log/php/fpm.www.slow.log
+
+  nginx:
+    depends_on:
+      - php-fpm
+    #container_name: ${APP_NAME}_nginx
+    ports:
+      - "80:80"
+    build:
+        context:  ./docker/nginx
+    volumes:
+        - ./:/usr/share/nginx/laravel_docker
+        - ./storage/nginx-logs/access.log:/var/log/nginx/laravel.docker-dev.access.log
+        - ./storage/nginx-logs/error.log:/var/log/nginx/laravel.docker-dev.error.log
